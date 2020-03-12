@@ -24,10 +24,13 @@ appl
 
 ## Render
 
-Click on a chart and hold shift to interact (by default disabled because it interferes with Rmd vertical scrolling in RStudio)
+~~Doubleclick on chart to interact (by default pointer events are disabled because it interferes with Rmd vertical scrolling in RStudio)~~ Will figure that out later.
 
 ```{r}
 tradingview(data, list(
+  chart = list(
+    decimals = 2
+  ),
   width = list(
     type = "line",
     width = 1,
@@ -50,6 +53,9 @@ tradingview(data, list(
 
 ```{r}
 tradingview(aapl, list(
+    chart = list(
+      decimals = 2
+    ),
     close = list(
       type = "line",
       value = "close"
@@ -59,13 +65,20 @@ tradingview(aapl, list(
 
 ```{r}
 tradingview(aapl, list(
-    candles = list(
-      type = "candles",
-      overlay = TRUE,
+    chart = list(
+      decimals = 2,
       margins = list(
         top = 0,
         bottom = 0.2
       )
+    ),
+    candles = list(
+      type = "candles"
+    ),
+    line = list(
+      type = "line",
+      color = "rgba(255,0,0,0.2)",
+      value = "close"
     ),
     volume = list(
       type = "histogram",

@@ -4,8 +4,15 @@ class Tradingview {
     this.el = el;
     this.width = width;
     this.height = height;
+    this.decimals = 5;
     this.createChart();
-    this.bind();
+  }
+
+  format(price) {
+    if(typeof price !== 'number') {
+      return;
+    }
+    return price.toFixed(this.decimals);
   }
 
   createChart() {
@@ -14,7 +21,7 @@ class Tradingview {
       width,
       height,
       localization: {
-        priceFormatter: price => price.toFixed(5)
+        priceFormatter: price => this.format(price)
       }
     });
     this.chart.applyOptions({
@@ -61,16 +68,6 @@ class Tradingview {
     });
   }
 
-  bind() {
-    let body = document.body;
-    let setEnabled = enabled => {
-      body.setAttribute('style', `pointer-events: ${enabled ? 'all' : 'none'}`);
-    };
-    setEnabled(false);
-    body.addEventListener('keydown', e => setEnabled(e.shiftKey));
-    body.addEventListener('keyup', () => setEnabled(false));
-  }
-
   normalizeData(data) {
     if(Array.isArray(data)) {
       data = data.map(item => this.normalizeData(item));
@@ -103,7 +100,10 @@ class Tradingview {
 
   scaleMargins(margins) {
     if(!margins) {
-      return null;
+      return {
+        top: 0,
+        bottom: 0
+      };
     }
     let { top, bottom } = margins;
     return {
@@ -214,6 +214,15 @@ class Tradingview {
     })));
   }
 
+  applyOptions(settings) {
+    this.decimals = this.number(settings.decimals, 5);
+    this.chart.applyOptions({
+      priceScale: {
+        scaleMargins: this.scaleMargins(settings.margins)
+      }
+    });
+  }
+
   add(key, settings) {
     let { type } = settings;
     if(type === 'line') {
@@ -233,7 +242,11 @@ class Tradingview {
     this.data = this.normalizeData(data);
     for(let key in settings) {
       let value = settings[key];
-      this.add(key, value);
+      if(key === 'chart') {
+        this.applyOptions(value);
+      } else {
+        this.add(key, value);
+      }
     }
   }
 
