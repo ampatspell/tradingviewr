@@ -1,0 +1,9 @@
+dependencies:
+  - name: tradingview
+    version: 0.0.1
+    src: htmlwidgets/lib/tradingview-0.0.1
+    script:
+      - lightweight-charts.standalone.production.js
+      - wrapper.js
+    stylesheet:
+      - style.css

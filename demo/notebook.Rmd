@@ -1,0 +1,81 @@
+---
+title: "TradingView In R Notebook"
+output: html_notebook
+---
+
+```{r setup}
+knitr::opts_chunk$set(warning = FALSE, message = FALSE)
+library(tradingview)
+library(tidyverse)
+library(tidyquant)
+```
+
+```{r}
+data <- iris %>% mutate(
+  time = Sys.time() + (row_number() * 60 * 60)
+)
+data
+```
+
+```{r}
+aapl <- tq_get("AAPL") %>% mutate(time = date)
+appl
+```
+
+## Render
+
+Click on a chart and hold shift to interact (by default disabled because it interferes with Rmd vertical scrolling in RStudio)
+
+```{r}
+tradingview(data, list(
+  width = list(
+    type = "line",
+    width = 1,
+    value = "Sepal.Width",
+    color = "rgba(255,0,0,0.5)"
+  ),
+  length = list(
+    type = "line",
+    width = 1,
+    value = "Sepal.Length"
+  ),
+  length.h = list(
+    type = "histogram",
+    value = "Sepal.Width",
+    base = 3
+  )  
+), height = 300)
+```
+
+
+```{r}
+tradingview(aapl, list(
+    close = list(
+      type = "line",
+      value = "close"
+    )
+), height = 400)
+```
+
+```{r}
+tradingview(aapl, list(
+    candles = list(
+      type = "candles",
+      overlay = TRUE,
+      margins = list(
+        top = 0,
+        bottom = 0.2
+      )
+    ),
+    volume = list(
+      type = "histogram",
+      value = "volume",
+      color = "rgba(0,0,0,0.2)",
+      overlay = TRUE,
+      margins = list(
+        top = 0.8,
+        bottom = 0
+      )
+    )
+), height = 400)
+```
