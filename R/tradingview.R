@@ -16,7 +16,7 @@ tradingview <- function(data,
     data <- c()
   }
 
-  if(missing(settings)) {
+  if (missing(settings)) {
     settings <- list()
   }
 
