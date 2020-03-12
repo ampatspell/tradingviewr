@@ -3,3 +3,5 @@
 /.Rproj.user/
 *.nb.html
 rsconnect/
+/.rhistory
+/.RData
