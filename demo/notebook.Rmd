@@ -92,3 +92,37 @@ tradingview(aapl, list(
     )
 ), height = 400)
 ```
+```{r}
+tv_add <- function(., name, value) {
+  .$x$settings[[name]] = value
+  .
+}
+
+margins <- function(top = 0, bottom = 0) {
+  list(top = top, bottom = bottom)
+}
+
+addLine <- function(., name = "line", width = 1, value = "value", color = "red", overlay = FALSE) {
+  tv_add(., name, list(type = "line", width = width, value = value, color = color, overlay = overlay))
+}
+
+addChart <- function(., decimals = 5, margins = margins(0, 0)) {
+  tv_add(., name = "chart", value = list(decimals = decimals, margins = margins))
+}
+
+addCandles <- function(., name = "candles", value = "value", open = "open", close = "close", high = "high", low = "low", time = "time") {
+  tv_add(., name, list(type = "candles", open = open, close = close, high = high, low = low, time = time))
+}
+
+tradingview(data) %>% 
+  addChart(decimals = 2, margins = margins(0,0)) %>%
+  addLine(name = "width", overlay = TRUE, width = 1, value = "Sepal.Width", color = "rgba(255,0,0,0.5)") %>%
+  addLine(name = "length", width = 1, value = "Sepal.Length", color = "rgba(0,255,0,0.5)")
+```
+
+```{r}
+tradingview(appl) %>% 
+  addChart(decimals = 2, margins = margins(0,0)) %>%
+  addCandles()
+```
+
