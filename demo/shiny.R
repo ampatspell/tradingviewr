@@ -11,28 +11,11 @@ ui = shinyUI(fluidPage(
 
 server = function(input, output) {
   output$tv <- renderTradingview({
-    tradingview(aapl, list(
-      chart = list(
-        decimals = 2,
-        margins = list(
-          top = 0,
-          bottom = 0.2
-        )
-      ),
-      candles = list(
-        type = "candles"
-      ),
-      volume = list(
-        type = "histogram",
-        value = "volume",
-        color = "rgba(0,0,0,0.2)",
-        overlay = TRUE,
-        margins = list(
-          top = 0.8,
-          bottom = 0
-        )
-      )
-    ), height = 400)
+    tradingview(aapl, height = 400) %>%
+      tv_chart(decimals = 2, margins = tv_margins(0, 0.2)) %>%
+      tv_candles() %>%
+      tv_line(color = "rgba(255,0,0,0.2)", value = "close") %>%
+      tv_histogram(value = "volume", color = "rgba(0,0,0,0.15)", overlay = TRUE, margins = tv_margins(0.8, 0))
   })
 }
 

@@ -12,7 +12,11 @@ library(tidyquant)
 
 ```{r}
 data <- iris %>% mutate(
-  time = Sys.time() + (row_number() * 60 * 60)
+  time = Sys.time() + (row_number() * 60 * 60),
+  color = case_when(
+    Sepal.Width > 3 ~ "above",
+    TRUE ~ "below"
+  )
 )
 data
 ```
@@ -24,105 +28,31 @@ aapl
 
 ## Render
 
-~~Doubleclick on chart to interact (by default pointer events are disabled because it interferes with Rmd vertical scrolling in RStudio)~~ Will figure that out later.
-
 ```{r}
-tradingview(data, list(
-  chart = list(
-    decimals = 2
-  ),
-  width = list(
-    type = "line",
-    width = 1,
-    value = "Sepal.Width",
-    color = "rgba(255,0,0,0.5)"
-  ),
-  length = list(
-    type = "line",
-    width = 1,
-    value = "Sepal.Length"
-  ),
-  length.h = list(
-    type = "histogram",
-    value = "Sepal.Width",
-    base = 3
-  )  
-), height = 300)
-```
-
-
-```{r}
-tradingview(aapl, list(
-    chart = list(
-      decimals = 2
-    ),
-    close = list(
-      type = "line",
-      value = "close"
-    )
-), height = 400)
-```
-
-```{r}
-tradingview(aapl, list(
-    chart = list(
-      decimals = 2,
-      margins = list(
-        top = 0,
-        bottom = 0.2
-      )
-    ),
-    candles = list(
-      type = "candles"
-    ),
-    line = list(
-      type = "line",
-      color = "rgba(255,0,0,0.2)",
-      value = "close"
-    ),
-    volume = list(
-      type = "histogram",
-      value = "volume",
-      color = "rgba(0,0,0,0.2)",
-      overlay = TRUE,
-      margins = list(
-        top = 0.8,
-        bottom = 0
-      )
-    )
-), height = 400)
-```
-```{r}
-tv_add <- function(., name, value) {
-  .$x$settings[[name]] = value
-  .
-}
-
-tv_margins <- function(top = 0, bottom = 0) {
-  list(top = top, bottom = bottom)
-}
-
-tv_line <- function(., name = "line", width = 1, value = "value", color = "red", overlay = FALSE) {
-  tv_add(., name, list(type = "line", width = width, value = value, color = color, overlay = overlay))
-}
-
-tv_chart <- function(., decimals = 5, margins = tv_margins(0, 0)) {
-  tv_add(., name = "chart", value = list(decimals = decimals, margins = margins))
-}
-
-tv_candles <- function(., name = "candles", value = "value", open = "open", close = "close", high = "high", low = "low", time = "time") {
-  tv_add(., name, list(type = "candles", open = open, close = close, high = high, low = low, time = time))
-}
-
-tradingview(data) %>% 
-  tv_chart(decimals = 2, margins = tv_margins(0,0)) %>%
-  tv_line(name = "width", overlay = TRUE, width = 1, value = "Sepal.Width", color = "rgba(255,0,0,0.5)") %>%
-  tv_line(name = "length", width = 1, value = "Sepal.Length", color = "rgba(0,255,0,0.5)")
-```
-
-```{r}
-tradingview(aapl) %>% 
+tradingview(data, height = 300) %>%
   tv_chart(decimals = 2) %>%
-  tv_candles()
+  tv_line(value = "Sepal.Width") %>%
+  tv_line(value = "Sepal.Length", color = "rgba(255,0,0,0.5)") %>%
+  tv_histogram(name = "histogram", 
+               value = "Sepal.Width", 
+               base = 3, 
+               colors = "color", 
+               mapping = list(
+                 above = "rgba(0, 255, 0, 0.1)", 
+                 below = "rgba(255, 0, 0, 0.1)"))
 ```
 
+
+```{r}
+tradingview(aapl, height = 400) %>%
+  tv_chart(decimals = 2) %>%
+  tv_line(value = "close")
+```
+
+```{r}
+tradingview(aapl, height = 400) %>%
+  tv_chart(decimals = 2, margins = tv_margins(0, 0.2)) %>%
+  tv_candles() %>%
+  tv_line(color = "rgba(255,0,0,0.2)", value = "close") %>%
+  tv_histogram(value = "volume", color = "rgba(0,0,0,0.15)", overlay = TRUE, margins = tv_margins(0.8, 0))
+```

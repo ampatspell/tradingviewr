@@ -84,15 +84,19 @@ class Tradingview {
     return data;
   }
 
+  fallback(value) {
+    return value === null || typeof value === 'undefined';
+  }
+
   boolean(value, fallback) {
-    if(typeof value === 'undefined') {
+    if(this.fallback(value)) {
       return fallback;
     }
     return !!value;
   }
 
   number(value, fallback) {
-    if(typeof value === 'undefined') {
+    if(this.fallback(value)) {
       return fallback;
     }
     return value;
@@ -120,7 +124,7 @@ class Tradingview {
   }
 
   string(value, fallback) {
-    if(typeof value === 'undefined') {
+    if(this.fallback(value)) {
       return fallback;
     }
     return value;
@@ -149,6 +153,7 @@ class Tradingview {
   addLine(key, settings) {
     let series = this.chart.addLineSeries({
       lineWidth: this.number(settings.width, 1),
+      lineType: this.lineType(settings.lineType),
       overlay: this.boolean(settings.overlay, false),
       scaleMargins: this.scaleMargins(settings.margins),
       lineStyle: this.lineStyle(settings.style),
@@ -182,12 +187,20 @@ class Tradingview {
 
     let time = this.string(settings.time, 'time');
     let value = this.string(settings.value, 'value');
-    let color = this.string(settings.color, 'color');
+
+    let { mapping, colors } = settings;
+    let color = item => {
+      if(!colors || !mapping) {
+        return;
+      }
+      let value = item[colors];
+      return mapping[value];
+    };
 
     series.setData(data.map(item => ({
       time: item[time],
       value: item[value],
-      color: item[color]
+      color: color(item)
     })));
   }
 
