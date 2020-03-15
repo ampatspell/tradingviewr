@@ -6,6 +6,7 @@ class Tradingview {
     this.height = height;
     this.decimals = 5;
     this.createChart();
+    this.time = "time";
   }
 
   format(price) {
@@ -164,7 +165,7 @@ class Tradingview {
 
     let data = this.lookup(settings.data);
 
-    let time = this.string(settings.time, 'time');
+    let time = this.string(settings.time, this.time);
     let value = this.string(settings.value, 'value');
 
     let payload = data.map(item => ({
@@ -185,7 +186,7 @@ class Tradingview {
 
     let data = this.lookup(settings.data);
 
-    let time = this.string(settings.time, 'time');
+    let time = this.string(settings.time, this.time);
     let value = this.string(settings.value, 'value');
 
     let { mapping, colors } = settings;
@@ -212,7 +213,7 @@ class Tradingview {
 
     let data = this.lookup(settings.data);
 
-    let time = this.string(settings.time, 'time');
+    let time = this.string(settings.time, this.time);
     let open = this.string(settings.open, 'open');
     let close = this.string(settings.close, 'close');
     let high = this.string(settings.high, 'high');
@@ -229,6 +230,7 @@ class Tradingview {
 
   applyOptions(settings) {
     this.decimals = this.number(settings.decimals, 5);
+    this.time = this.string(settings.time, "time");
     this.chart.applyOptions({
       priceScale: {
         scaleMargins: this.scaleMargins(settings.margins)

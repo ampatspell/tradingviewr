@@ -47,10 +47,11 @@ tv_margins <- function(top = 0, bottom = 0) {
 }
 
 #' @export
-tv_chart <- function(., decimals = 5, margins = tv_margins(0, 0)) {
+tv_chart <- function(., decimals = 5, time = "time", margins = tv_margins(0, 0)) {
   tv_add(.,
          name = "chart",
          value = list(decimals = decimals,
+                      time = time,
                       margins = margins))
 }
 
@@ -58,6 +59,7 @@ tv_chart <- function(., decimals = 5, margins = tv_margins(0, 0)) {
 tv_line <- function(.,
                     name = NULL,
                     data = NULL,
+                    time = NULL,
                     value = "value",
                     width = 1,
                     color = NULL,
@@ -78,6 +80,7 @@ tv_line <- function(.,
          name,
          list(type = "line",
               data = data,
+              time = time,
               value = value,
               width = width,
               color = color,
@@ -91,7 +94,7 @@ tv_line <- function(.,
 tv_histogram <- function(.,
                          name = NULL,
                          data = NULL,
-                         time = "time",
+                         time = NULL,
                          base = NULL,
                          value = "value",
                          color = NULL,
@@ -125,7 +128,7 @@ tv_candles <- function(.,
                        close = "close",
                        high = "high",
                        low = "low",
-                       time = "time",
+                       time = NULL,
                        overlay = FALSE,
                        margins = tv_margins()) {
   tv_add(.,

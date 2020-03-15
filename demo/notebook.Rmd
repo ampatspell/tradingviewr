@@ -22,7 +22,7 @@ data
 ```
 
 ```{r}
-aapl <- tq_get("AAPL") %>% mutate(time = date)
+aapl <- tq_get("AAPL")
 aapl
 ```
 
@@ -45,14 +45,17 @@ tradingview(data, height = 300) %>%
 
 ```{r}
 tradingview(aapl, height = 400) %>%
-  tv_chart(decimals = 2) %>%
+  tv_chart(decimals = 2, time = "date") %>%
   tv_line(value = "close")
 ```
 
 ```{r}
 tradingview(aapl, height = 400) %>%
-  tv_chart(decimals = 2, margins = tv_margins(0, 0.2)) %>%
+  tv_chart(decimals = 2, time = "date", margins = tv_margins(0, 0.2)) %>%
   tv_candles() %>%
   tv_line(color = "rgba(255,0,0,0.2)", value = "close") %>%
-  tv_histogram(value = "volume", color = "rgba(0,0,0,0.15)", overlay = TRUE, margins = tv_margins(0.8, 0))
+  tv_histogram(value = "volume", 
+               color = "rgba(0,0,0,0.15)", 
+               overlay = TRUE, 
+               margins = tv_margins(0.8, 0))
 ```
