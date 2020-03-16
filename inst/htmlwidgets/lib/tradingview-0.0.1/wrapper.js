@@ -311,7 +311,6 @@ class Tradingview {
     if(type == "data.frame") {
       data = HTMLWidgets.dataframeToD3(data);
     }
-    console.log(data);
     this.data = this.normalizeData(data);
     for(let key in settings) {
       let value = settings[key];
@@ -321,6 +320,7 @@ class Tradingview {
         this.add(key, value);
       }
     }
+    this.chart.timeScale().scrollToPosition(3, false);
   }
 
   resize(width, height) {
