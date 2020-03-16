@@ -1,0 +1,65 @@
+---
+title: "TradingView markers"
+output: html_notebook
+---
+
+```{r setup}
+library(tradingview)
+library(tidyverse)
+library(tidyquant)
+
+tq_sma <- function(., select, n = 14, ...) {
+  tq_mutate(
+    .,
+    select = select,
+    mutate_fun = SMA,
+    n = n,
+    col_rename = paste0("sma.", n)
+  )
+}
+
+aapl <- tq_get("AAPL") %>%
+  tq_sma(n = 14, select = "adjusted") %>%
+  tq_sma(n = 28, select = "adjusted") %>%
+  na.omit() %>%
+  mutate(
+    direction = if_else(sma.14 > sma.28, "up", "down"),
+    marker = if_else(
+      direction != lag(direction),
+      if_else(direction == "up", "arrowUp", "arrowDown"),
+      NULL
+    )
+  )
+```
+
+```{r}
+aapl
+```
+
+
+```{r}
+tradingview(aapl, height = 400) %>%
+  tv_chart(decimals = 2, time = "date") %>%
+  tv_candles(priceLine = FALSE, markers = tv_markers(shape = "marker"))
+```
+
+```{r}
+tradingview(aapl, height = 400) %>%
+  tv_chart(decimals = 2, time = "date") %>%
+  tv_line(
+    priceLine = FALSE,
+    value = "adjusted",
+    markers = tv_markers(shape = "marker")
+  )
+```
+
+```{r}
+tradingview(aapl, height = 400) %>%
+  tv_chart(decimals = 2, time = "date") %>%
+  tv_histogram(
+    priceLine = FALSE,
+    color = "rgba(255,0,0,0.2)",
+    value = "adjusted",
+    markers = tv_markers(shape = "marker")
+  )
+```

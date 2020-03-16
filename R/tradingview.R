@@ -46,6 +46,10 @@ tv_margins <- function(top = 0, bottom = 0) {
   list(top = top, bottom = bottom)
 }
 
+tv_markers <- function(shape = NULL, position = NULL, color = NULL) {
+  list(shape = shape, position = position, color = color)
+}
+
 #' @export
 tv_chart <- function(., decimals = 5, time = "time", margins = tv_margins(0, 0)) {
   tv_add(.,
@@ -65,7 +69,9 @@ tv_line <- function(.,
                     color = NULL,
                     style = c("solid", "dotted", "dashed", "large-dashed", "sparse-dotted"),
                     type = c("normal", "steps"),
+                    markers = NULL,
                     overlay = FALSE,
+                    priceLine = TRUE,
                     margins = tv_margins()) {
   if (is.null(name)) {
     name <- value
@@ -86,6 +92,8 @@ tv_line <- function(.,
               color = color,
               style = style,
               lineType = type,
+              priceLine = priceLine,
+              markers = markers,
               overlay = overlay,
               margins = margins))
 }
@@ -100,6 +108,8 @@ tv_histogram <- function(.,
                          color = NULL,
                          mapping = NULL,
                          colors = NULL,
+                         priceLine = TRUE,
+                         markers = NULL,
                          overlay = FALSE,
                          margins = tv_margins()) {
   if (is.null(name)) {
@@ -116,6 +126,8 @@ tv_histogram <- function(.,
               color = color,
               overlay = overlay,
               colors = colors,
+              priceLine = priceLine,
+              markers = markers,
               mapping = mapping,
               margins = margins))
 }
@@ -128,7 +140,9 @@ tv_candles <- function(.,
                        close = "close",
                        high = "high",
                        low = "low",
+                       markers = NULL,
                        time = NULL,
+                       priceLine = TRUE,
                        overlay = FALSE,
                        margins = tv_margins()) {
   tv_add(.,
@@ -139,7 +153,9 @@ tv_candles <- function(.,
               close = close,
               high = high,
               low = low,
+              markers = markers,
               time = time,
+              priceLine = priceLine,
               overlay = overlay,
               margins = margins))
 }

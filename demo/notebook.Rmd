@@ -42,20 +42,19 @@ tradingview(data, height = 300) %>%
                  below = "rgba(255, 0, 0, 0.1)"))
 ```
 
-
 ```{r}
 tradingview(aapl, height = 400) %>%
   tv_chart(decimals = 2, time = "date") %>%
-  tv_line(value = "close")
+  tv_line(value = "close", priceLine = FALSE)
 ```
 
 ```{r}
 tradingview(aapl, height = 400) %>%
   tv_chart(decimals = 2, time = "date", margins = tv_margins(0, 0.2)) %>%
   tv_candles() %>%
-  tv_line(color = "rgba(255,0,0,0.2)", value = "close") %>%
+  tv_line(color = "rgba(255,0,0,0.2)", value = "close", priceLine = FALSE) %>%
   tv_histogram(value = "volume", 
-               color = "rgba(0,0,0,0.15)", 
+               color = "rgba(0,0,0,0.15)",
                overlay = TRUE, 
                margins = tv_margins(0.8, 0))
 ```

@@ -151,6 +151,56 @@ class Tradingview {
     return 0;
   }
 
+  priceLine(value) {
+    value = this.boolean(value, true);
+    return {
+      priceLineVisible: value,
+      lastValueVisible: value
+    };
+  }
+
+  setMarkers(series, data, time, settings) {
+    if(!settings) {
+      return;
+    }
+
+    let shapeProp = this.string(settings.shape, null);
+    if(!shapeProp) {
+      return;
+    }
+
+    let positionProp = this.string(settings.position, null);
+    let colorProp = this.string(settings.color, null);
+
+    let markers = data.filter(item => !!item[shapeProp]).map(item => {
+
+      let shape = item[shapeProp];
+
+      let position = item[positionProp];
+      if(!position) {
+        if(shape === 'arrowUp') {
+          position = 'belowBar';
+        } else {
+          position = 'aboveBar';
+        }
+      }
+
+      let color = item[colorProp];
+      if(!color) {
+        color = 'rgba(0, 0, 0, 0.7)';
+      }
+
+      return {
+        time: item[time],
+        position,
+        shape,
+        color
+      };
+    });
+
+    series.setMarkers(markers);
+  }
+
   addLine(key, settings) {
     let series = this.chart.addLineSeries({
       lineWidth: this.number(settings.width, 1),
@@ -161,6 +211,7 @@ class Tradingview {
       color: this.string(settings.color, '#2196f3'),
       crosshairMarkerVisible: true,
       crosshairMarkerRadius: 2,
+      ...this.priceLine(settings.priceLine)
     });
 
     let data = this.lookup(settings.data);
@@ -168,12 +219,12 @@ class Tradingview {
     let time = this.string(settings.time, this.time);
     let value = this.string(settings.value, 'value');
 
-    let payload = data.map(item => ({
+    series.setData(data.map(item => ({
       time: item[time],
       value: item[value]
-    }));
+    })));
 
-    series.setData(payload);
+    this.setMarkers(series, data, time, settings.markers);
   }
 
   addHistogram(key, settings) {
@@ -181,7 +232,8 @@ class Tradingview {
       base: this.number(settings.base, null),
       color: this.string(settings.color, '#FFF5EE'),
       overlay: this.boolean(settings.overlay, false),
-      scaleMargins: this.scaleMargins(settings.margins)
+      scaleMargins: this.scaleMargins(settings.margins),
+      ...this.priceLine(settings.priceLine)
     });
 
     let data = this.lookup(settings.data);
@@ -203,12 +255,15 @@ class Tradingview {
       value: item[value],
       color: color(item)
     })));
+
+    this.setMarkers(series, data, time, settings.markers);
   }
 
   addCandles(key, settings) {
     let series = this.chart.addCandlestickSeries({
       overlay: this.boolean(settings.overlay, false),
-      scaleMargins: this.scaleMargins(settings.margins)
+      scaleMargins: this.scaleMargins(settings.margins),
+      ...this.priceLine(settings.priceLine)
     });
 
     let data = this.lookup(settings.data);
@@ -226,6 +281,8 @@ class Tradingview {
       high: item[high],
       low: item[low]
     })));
+
+    this.setMarkers(series, data, time, settings.markers);
   }
 
   applyOptions(settings) {
@@ -254,6 +311,7 @@ class Tradingview {
     if(type == "data.frame") {
       data = HTMLWidgets.dataframeToD3(data);
     }
+    console.log(data);
     this.data = this.normalizeData(data);
     for(let key in settings) {
       let value = settings[key];
