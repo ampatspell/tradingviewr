@@ -49,6 +49,7 @@ tradingview(aapl, height = 400) %>%
   tv_line(
     priceLine = FALSE,
     value = "adjusted",
+    crosshair = FALSE,
     markers = tv_markers(shape = "marker")
   )
 ```

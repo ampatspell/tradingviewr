@@ -209,7 +209,7 @@ class Tradingview {
       scaleMargins: this.scaleMargins(settings.margins),
       lineStyle: this.lineStyle(settings.style),
       color: this.string(settings.color, '#2196f3'),
-      crosshairMarkerVisible: true,
+      crosshairMarkerVisible: this.boolean(settings.crosshair, true),
       crosshairMarkerRadius: 2,
       ...this.priceLine(settings.priceLine)
     });
